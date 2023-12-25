@@ -25,9 +25,9 @@ jobs:
     - name: Cargar Frontend en Bucket S3
       uses: jakejarvis/s3-sync-action@master
       with: 
-        args: --acl public-read --delete --exclude '.git/*' --exclude '.github/*'
+        args: --acl public-read 
         bucket_url : s3://upload-forntend
-        source_dir: ./index.html
+        source: ./index.html
       env:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
