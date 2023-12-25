@@ -1,0 +1,35 @@
+name: Despliegue_Ecs_s3
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/*' 
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout del código
+      uses: actions/checkout@v2
+
+    - name: Configurar AWS CLI
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}  
+
+    - name: Construir y Subir imagen Docker a AWS ECR
+      run: |
+       docker build -t your-custom-image .
+       docker tag your-custom-image:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.AWS_ECR_NAME}}:latest
+       docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.AWS_ECR_NAME}}:latest
+
+
+    - name: Despliegue en Ecs
+      run: |
+        aws ecs update-service --cluster my_cluster --service  example-service --force-new-deployment
+
+    
