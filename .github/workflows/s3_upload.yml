@@ -25,7 +25,7 @@ jobs:
     - name: Cargar Frontend en Bucket S3
       uses: jakejarvis/s3-sync-action@master
       with: 
-        args: --acl public-read --exclude '*' --include 'index.html'
+        args: --delete --exclude '*' --include 'index.html'
         bucket_url: s3://example-infra23
         source_dir: .
       env:
